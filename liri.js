@@ -2,11 +2,12 @@ var keys = require("./key.js");
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
+var fs = require('fs');
 
 var getMyTweets = function() {
     var client = new Twitter(keys.twitterKeys);
 
-    var params = {screen_name: 'inrtracker'}
+    var params = {screen_name: 'foofighters'}
     client.get('statuses/user_timeline', params, function(error, tweets, response){ 
     if(!error) {
         for (var i = 0; i < tweets.length; i++) {
@@ -44,21 +45,44 @@ var songChoice = function(songName) {
        });
 };
 
-function omdbThisMovie(movieTitle) {
+// var chooseMovie = function(movieName) {
+//     request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=9e300465", function (error, response, body) {
+//       if (!error && response.statusCode === 200) {
+//         console.log('----------------');
+//         console.log(body);
+//       }
+//     })
+// }
 
-    request('http://www.omdbapi.com/?t=' + movieTitle + '&y=&plot=short&apikey=409cece', function (error, response, body) {
-      if(error) {
-          ////////////
+function omdbThisMovie(movieTitle) {
+    var request = require("request");
+    request("http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=9e300465", function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+
+        var jsonData = JSON.parse(body);
+
+        console.log('-------------------------------------');
+        // console.log("Title: " + JSON.parse(body).Title);
+        // console.log("Year: " + JSON.parse(body).Year);
+        // console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+        // console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings);
+        // console.log("Country: " + JSON.parse(body).Country);
+        // console.log("Language: " + JSON.parse(body).Language);
+        // console.log("Plot: " + JSON.parse(body).Plot);
+        // console.log("Actors: " + JSON.parse(body).Actors);
+        console.log(body);
       }
-});
-}
+    });
+    }
 
 
 var pick = function(caseData, functionData) {
     switch(caseData) {
         case 'my-tweets' : getMyTweets();
         break;
-        case 'spotify-this-song': songChoice(functionData);
+        case 'spotify-this-song' : songChoice(functionData);
+        break;
+        case 'movie-this' : omdbThisMovie();
         break;
         default:
         console.log('LIRI does not know that');
